@@ -20,7 +20,7 @@ worksheet = sh.sheet1
 # Inputs
 nombre = st.text_input("Apellido y nombre")
 dni = st.text_input("DNI")
-fecha_nacimiento = ("Fecha de nacimiento")
+fecha_nacimiento = st.("Fecha de nacimiento")
 opciones = ["Lista Free", "Cumpleaños ""DANIEL MENDOZA - VIERNES 1 JUN """, "Cumpleaños ""FRANCO ONTIVERO - SABADO 2 JUN"""]
 seleccion = st.selectbox("Elegí una Lista:", opciones)
 
