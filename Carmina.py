@@ -2,42 +2,36 @@ import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 
-st.title("🍸 Registro de Listas Carmina PA")
+st.title("📄 Acceso a Google Sheets con Streamlit")
 
-# Cargar credenciales desde secretos
+# 1. Obtener credenciales desde los secrets
 credentials_info = st.secrets["google_service_account"]
-credentials = Credentials.from_service_account_info(credentials_info)
+scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+credentials = Credentials.from_service_account_info(credentials_info, scopes=scopes)
 
-# Autorización con gspread
+# 2. Autorización con gspread
 gc = gspread.authorize(credentials)
 
-# Abrir la hoja (poné acá el nombre real de tu Google Sheet)
-sh = gc.open("bdcarmina")  # Cambialo por el nombre de tu hoja real
-sheet = sh.sheet1  # o sh.worksheet("Nombre de la pestaña")
+# 3. Abrir hoja de cálculo por nombre
+sh = gc.open("nombre_de_tu_hoja")  # ⬅️ Cambia esto por el nombre real
+worksheet = sh.sheet1
 
-# Opciones para el selectbox
-opciones = [
-    "Lista Free", 
-    'Cumpleaños "DANIEL MENDOZA - VIERNES 1 JUN"',
-    'Cumpleaños "FRANCO ONTIVERO - SABADO 2 JUN"'
-]
+# 4. Leer todos los valores
+datos = worksheet.get_all_values()
 
-# Inputs
-nombre = st.text_input("Apellido y nombre")
-dni = st.text_input("DNI")
-fecha_nacimiento = st.date_input("Fecha de nacimiento")
-seleccion = st.selectbox("Elegí una Lista:", opciones)
+st.subheader("Contenido de la hoja:")
+st.write(datos)
 
-# Botón para guardar
-if st.button("Guardar"):
-    if nombre.strip() and dni.strip():
-        # Agregar fila con los datos a la hoja
-        sheet.append_row([
-            nombre.strip(),
-            dni.strip(),
-            fecha_nacimiento.strftime("%d/%m/%Y"),
-            seleccion
-        ])
-        st.success("✅ Datos guardados correctamente.")
-    else:
-        st.warning("⚠️ Por favor completa todos los campos obligatorios.")
+# 5. Formulario para escribir nuevos datos
+st.subheader("Agregar fila a Google Sheets")
+with st.form("formulario"):
+    nombre = st.text_input("Nombre")
+    email = st.text_input("Email")
+    enviado = st.form_submit_button("Guardar")
+
+    if enviado:
+        if nombre.strip() == "" or email.strip() == "":
+            st.error("❌ Por favor completá todos los campos.")
+        else:
+            worksheet.append_row([nombre, email])
+            st.success("✅ Datos guardados correctamente")
