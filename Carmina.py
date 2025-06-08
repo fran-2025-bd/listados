@@ -3,24 +3,24 @@ import gspread
 from google.oauth2.service_account import Credentials
 import json
 
-# Título
 st.title("🍸 Registro de Listas Carmina PA")
 
-# Cargar credenciales desde secrets de Streamlit
 scope = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
 ]
+
+# Cargar credenciales desde secrets
 creds_dict = json.loads(st.secrets["GOOGLE_SHEETS_CREDENTIALS"])
 creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
 
-# Autenticación con gspread
+# Cliente gspread
 client = gspread.authorize(creds)
 
-# Abrimos la hoja de cálculo
-sheet = client.open("bdcarmina").sheet1  # Cambiá sheet1 si necesitás otra pestaña
+# Abrir hoja de cálculo
+sheet = client.open("bdcarmina").sheet1
 
-# Inputs del formulario
+# Inputs
 nombre = st.text_input("Apellido y nombre")
 dni = st.text_input("DNI")
 fecha_nacimiento = st.date_input("Fecha de nacimiento")
@@ -32,15 +32,19 @@ opciones = [
 ]
 seleccion = st.selectbox("Elegí una Lista:", opciones)
 
-# Botón para guardar
 if st.button("Guardar"):
-    if nombre and dni:
-        sheet.append_row([
-            nombre,
-            dni,
-            fecha_nacimiento.strftime("%d/%m/%Y"),
-            seleccion
-        ])
-        st.success("✅ Datos guardados correctamente.")
-    else:
+    if not nombre or not dni:
         st.warning("⚠️ Por favor completa todos los campos obligatorios.")
+    elif not dni.isdigit():
+        st.warning("⚠️ El DNI debe contener solo números.")
+    else:
+        try:
+            sheet.append_row([
+                nombre,
+                dni,
+                fecha_nacimiento.strftime("%d/%m/%Y"),
+                seleccion
+            ])
+            st.success("✅ Datos guardados correctamente.")
+        except Exception as e:
+            st.error(f"❌ Error al guardar los datos: {e}")
