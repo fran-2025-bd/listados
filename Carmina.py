@@ -12,7 +12,7 @@ credentials = Credentials.from_service_account_info(credentials_info)
 gc = gspread.authorize(credentials)
 
 # Abrir la hoja (poné acá el nombre real de tu Google Sheet)
-sh = gc.open("ListadoCarmina2025")  # Cambialo por el nombre de tu hoja real
+sh = gc.open("bdcarmina")  # Cambialo por el nombre de tu hoja real
 sheet = sh.sheet1  # o sh.worksheet("Nombre de la pestaña")
 
 # Opciones para el selectbox
