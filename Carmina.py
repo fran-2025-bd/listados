@@ -2,36 +2,42 @@ import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 
-st.title("📄 Acceso a Google Sheets con Streamlit")
+st.title("🍸 Registro de Listas Carmina PA")
 
-# 1. Obtener credenciales desde los secrets
+# Cargar credenciales desde secretos
 credentials_info = st.secrets["google_service_account"]
-scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-credentials = Credentials.from_service_account_info(credentials_info, scopes=scopes)
+credentials = Credentials.from_service_account_info(credentials_info)
 
-# 2. Autorización con gspread
+# Autorización con gspread
 gc = gspread.authorize(credentials)
 
-# 3. Abrir hoja de cálculo por nombre
-sh = gc.open("bdcarmina")  # ⬅️ Cambia esto por el nombre real
-worksheet = sh.sheet1
+# Abrir la hoja y la pestaña especifica
+sh = gc.open("bdcarmina")         # Nombre de la hoja
+sheet = sh.worksheet("bd")        # Nombre de la pestaña
 
-# 4. Leer todos los valores
-datos = worksheet.get_all_values()
+# Opciones para el selectbox
+opciones = [
+    "Lista Free", 
+    'Cumpleaños "DANIEL MENDOZA - VIERNES 1 JUN"',
+    'Cumpleaños "FRANCO ONTIVERO - SABADO 2 JUN"'
+]
 
-st.subheader("Contenido de la hoja:")
-st.write(datos)
+# Inputs
+nombre = st.text_input("Apellido y nombre")
+dni = st.text_input("DNI")
+fecha_nacimiento = st.date_input("Fecha de nacimiento")
+seleccion = st.selectbox("Elegí una Lista:", opciones)
 
-# 5. Formulario para escribir nuevos datos
-st.subheader("Agregar fila a Google Sheets")
-with st.form("formulario"):
-    nombre = st.text_input("Nombre")
-    email = st.text_input("Email")
-    enviado = st.form_submit_button("Guardar")
-
-    if enviado:
-        if nombre.strip() == "" or email.strip() == "":
-            st.error("❌ Por favor completá todos los campos.")
-        else:
-            worksheet.append_row([nombre, email])
-            st.success("✅ Datos guardados correctamente")
+# Botón para guardar
+if st.button("Guardar"):
+    if nombre.strip() and dni.strip():
+        # Agregar fila con los datos a la hoja
+        sheet.append_row([
+            nombre.strip(),
+            dni.strip(),
+            fecha_nacimiento.strftime("%d/%m/%Y"),
+            seleccion
+        ])
+        st.success("✅ Datos guardados correctamente.")
+    else:
+        st.warning("⚠️ Por favor completa todos los campos obligatorios.")
