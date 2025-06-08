@@ -16,11 +16,6 @@ gc = gspread.authorize(credentials)
 sh = gc.open("bdcarmina")  # ⬅️ Cambia esto por el nombre real
 worksheet = sh.sheet1
 
-# 4. Leer todos los valores
-datos = worksheet.get_all_values()
-
-st.subheader("Contenido de la hoja:")
-st.write(datos)
 
 # 5. Formulario para escribir nuevos datos
 st.subheader("Agregar fila a Google Sheets")
