@@ -4,24 +4,25 @@ from google.oauth2.service_account import Credentials
 
 st.title("📄 Acceso a Google Sheets con Streamlit")
 
-# Obtener credenciales desde secrets
+# 1. Obtener credenciales desde los secrets
 credentials_info = st.secrets["google_service_account"]
-credentials = Credentials.from_service_account_info(credentials_info)
+scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+credentials = Credentials.from_service_account_info(credentials_info, scopes=scopes)
 
-# Autorización con gspread
+# 2. Autorización con gspread
 gc = gspread.authorize(credentials)
 
-# Abrir hoja por nombre
-sh = gc.open("nombre_de_tu_hoja")  # ⬅️ CAMBIA ESTO por el nombre real de tu hoja
+# 3. Abrir hoja de cálculo por nombre
+sh = gc.open("nombre_de_tu_hoja")  # ⬅️ Cambia esto por el nombre real
 worksheet = sh.sheet1
 
-# Leer valores (primeras 10 filas y 3 columnas)
+# 4. Leer todos los valores
 datos = worksheet.get_all_values()
 
 st.subheader("Contenido de la hoja:")
 st.write(datos)
 
-# Formulario para escribir datos
+# 5. Formulario para escribir nuevos datos
 st.subheader("Agregar fila a Google Sheets")
 with st.form("formulario"):
     nombre = st.text_input("Nombre")
@@ -29,5 +30,8 @@ with st.form("formulario"):
     enviado = st.form_submit_button("Guardar")
 
     if enviado:
-        worksheet.append_row([nombre, email])
-        st.success("✅ Datos guardados correctamente")
+        if nombre.strip() == "" or email.strip() == "":
+            st.error("❌ Por favor completá todos los campos.")
+        else:
+            worksheet.append_row([nombre, email])
+            st.success("✅ Datos guardados correctamente")
