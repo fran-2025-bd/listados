@@ -14,7 +14,7 @@ gc = gspread.authorize(credentials)
 
 # 3. Abrir hoja de cálculo por nombre
 sh = gc.open("bdcarmina")  # ⬅️ Cambia esto por el nombre real
-worksheet = sh.worksheet("bd")  # o sh.sheet1 si no especificaste nombre de pestaña
+worksheet = sh.worksheet("BD")  # o sh.sheet1 si no especificaste nombre de pestaña
 
 
 
