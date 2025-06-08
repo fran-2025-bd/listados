@@ -2,48 +2,32 @@ import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 
-st.title("🍸 Registro de Listas Carmina PA")
+st.title("📄 Acceso a Google Sheets con Streamlit")
 
-scope = [
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive"
-]
+# Obtener credenciales desde secrets
+credentials_info = st.secrets["google_service_account"]
+credentials = Credentials.from_service_account_info(credentials_info)
 
-# ✅ Ya no usamos json.loads
-creds_dict = st.secrets["GOOGLE_SHEETS_CREDENTIALS"]
-creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
+# Autorización con gspread
+gc = gspread.authorize(credentials)
 
-# Cliente gspread
-client = gspread.authorize(creds)
+# Abrir hoja por nombre
+sh = gc.open("nombre_de_tu_hoja")  # ⬅️ CAMBIA ESTO por el nombre real de tu hoja
+worksheet = sh.sheet1
 
-# Abrir hoja de cálculo
-sheet = client.open("bdcarmina").sheet1
+# Leer valores (primeras 10 filas y 3 columnas)
+datos = worksheet.get_all_values()
 
-# Inputs
-nombre = st.text_input("Apellido y nombre")
-dni = st.text_input("DNI")
-fecha_nacimiento = st.date_input("Fecha de nacimiento")
+st.subheader("Contenido de la hoja:")
+st.write(datos)
 
-opciones = [
-    "Lista Free",
-    "Cumpleaños DANIEL MENDOZA - VIERNES 1 JUN",
-    "Cumpleaños FRANCO ONTIVERO - SÁBADO 2 JUN"
-]
-seleccion = st.selectbox("Elegí una Lista:", opciones)
+# Formulario para escribir datos
+st.subheader("Agregar fila a Google Sheets")
+with st.form("formulario"):
+    nombre = st.text_input("Nombre")
+    email = st.text_input("Email")
+    enviado = st.form_submit_button("Guardar")
 
-if st.button("Guardar"):
-    if not nombre or not dni:
-        st.warning("⚠️ Por favor completa todos los campos obligatorios.")
-    elif not dni.isdigit():
-        st.warning("⚠️ El DNI debe contener solo números.")
-    else:
-        try:
-            sheet.append_row([
-                nombre,
-                dni,
-                fecha_nacimiento.strftime("%d/%m/%Y"),
-                seleccion
-            ])
-            st.success("✅ Datos guardados correctamente.")
-        except Exception as e:
-            st.error(f"❌ Error al guardar los datos: {e}")
+    if enviado:
+        worksheet.append_row([nombre, email])
+        st.success("✅ Datos guardados correctamente")
