@@ -13,7 +13,7 @@ credentials = Credentials.from_service_account_info(credentials_info, scopes=sco
 gc = gspread.authorize(credentials)
 
 # 3. Abrir hoja de cálculo por nombre
-sh = gc.open("BD")  # ⬅️ Cambia esto por el nombre real
+sh = gc.open("bdcarmina")  # ⬅️ Cambia esto por el nombre real
 worksheet = sh.sheet1
 
 # 4. Leer todos los valores
