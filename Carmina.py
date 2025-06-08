@@ -17,7 +17,7 @@ worksheet = sh.worksheet("BD")  # Aquí se define correctamente
 # Inputs
 nombre = st.text_input("Apellido y nombre")
 dni = st.text_input("DNI")
-fecha_nacimiento = st.date_input("Fecha de nacimiento")
+fecha_nacimiento = st.text_input("Fecha de nacimiento")
 
 opciones = [
     "Lista Free",
