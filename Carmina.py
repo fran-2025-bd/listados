@@ -2,7 +2,7 @@ import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 
-st.title("📄 Acceso a Google Sheets con Streamlit")
+st.title("🍸 Registro de Listas Carmina PA")
 
 # 1. Obtener credenciales desde los secrets
 credentials_info = st.secrets["google_service_account"]
@@ -20,7 +20,7 @@ worksheet = sh.sheet1
 # Inputs
 nombre = st.text_input("Apellido y nombre")
 dni = st.text_input("DNI")
-fecha_nacimiento = st.date_input("Fecha de nacimiento")
+fecha_nacimiento = ("Fecha de nacimiento")
 opciones = ["Lista Free", "Cumpleaños ""DANIEL MENDOZA - VIERNES 1 JUN """, "Cumpleaños ""FRANCO ONTIVERO - SABADO 2 JUN"""]
 seleccion = st.selectbox("Elegí una Lista:", opciones)
 
