@@ -28,7 +28,7 @@ seleccion = st.selectbox("Elegí una Lista:", opciones)
 
 if st.button("Guardar"):
     if nombre.strip() and dni.strip():
-        worksheet.append_row([nombre, dni, fecha_nacimiento.strftime("%d/%m/%Y"), seleccion])
+        worksheet.append_row([nombre, dni, fecha_nacimiento, seleccion])
         st.success("✅ Datos guardados correctamente.")
     else:
         st.warning("⚠️ Por favor completá todos los campos obligatorios.")
