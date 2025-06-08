@@ -12,7 +12,7 @@ gc = gspread.authorize(credentials)
 
 # Abrir hoja de cálculo
 sh = gc.open("bdcarmina")
-worksheet = sh.worksheet("bd")  # Aquí se define correctamente
+worksheet = sh.worksheet("BD")  # Aquí se define correctamente
 
 # Inputs
 nombre = st.text_input("Apellido y nombre")
