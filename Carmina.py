@@ -17,16 +17,19 @@ sh = gc.open("bdcarmina")  # ⬅️ Cambia esto por el nombre real
 worksheet = sh.sheet1
 
 
-# 5. Formulario para escribir nuevos datos
-st.subheader("Agregar fila a Google Sheets")
-with st.form("formulario"):
-    nombre = st.text_input("Nombre")
-    email = st.text_input("Email")
-    enviado = st.form_submit_button("Guardar")
+# Inputs
+nombre = st.text_input("Apellido y nombre")
+dni = st.text_input("DNI")
+fecha_nacimiento = st.date_input("Fecha de nacimiento")
+opciones = ["Lista Free", "Cumpleaños ""DANIEL MENDOZA - VIERNES 1 JUN """, "Cumpleaños ""FRANCO ONTIVERO - SABADO 2 JUN"""]
+seleccion = st.selectbox("Elegí una Lista:", opciones)
 
-    if enviado:
-        if nombre.strip() == "" or email.strip() == "":
-            st.error("❌ Por favor completá todos los campos.")
-        else:
-            worksheet.append_row([nombre, email])
-            st.success("✅ Datos guardados correctamente")
+
+if st.button("Guardar"):
+    if nombre and dni:
+        # Agregamos la fila con los datos
+        sheet.append_row([nombre, dni, fecha_nacimiento.strftime("%d/%m/%Y"),seleccion])
+        st.success("✅ Datos guardados correctamente.")
+    else:
+        st.warning("⚠️ Por favor completa todos los campos obligatorios.")
+
