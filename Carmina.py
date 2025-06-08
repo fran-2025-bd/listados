@@ -30,5 +30,12 @@ if st.button("Guardar"):
     if nombre.strip() and dni.strip():
         worksheet.append_row([nombre, dni, fecha_nacimiento, seleccion])
         st.success("✅ Datos guardados correctamente.")
+    
+
+ # Limpiar campos
+        st.session_state.nombre = ""
+        st.session_state.dni = ""
+        st.session_state.fecha_nacimiento = ""
+        st.session_state.seleccion = opciones[0]
     else:
         st.warning("⚠️ Por favor completá todos los campos obligatorios.")
