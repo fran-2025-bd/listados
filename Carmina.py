@@ -1,36 +1,46 @@
 import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
+import json
 
-# Definimos el scope de permisos
+# Título
+st.title("🍸 Registro de Listas Carmina PA")
+
+# Cargar credenciales desde secrets de Streamlit
 scope = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
 ]
+creds_dict = json.loads(st.secrets["GOOGLE_SHEETS_CREDENTIALS"])
+creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
 
-# Ruta al archivo JSON de credenciales (asegurate que esté en la misma carpeta o pon la ruta completa)
-creds = Credentials.from_service_account_file("carminalistados.json", scopes=scope)
-
-# Autenticación y conexión con gspread
+# Autenticación con gspread
 client = gspread.authorize(creds)
 
-# Abrimos la hoja llamada 'bdcarmina'
-sheet = client.open("bdcarmina").sheet1  # sheet1 abre la primera pestaña. Si tenés varias, cambiá el método.
+# Abrimos la hoja de cálculo
+sheet = client.open("bdcarmina").sheet1  # Cambiá sheet1 si necesitás otra pestaña
 
-st.title("🍸 Registro de Listas Carmina PA")
-
-# Inputs
+# Inputs del formulario
 nombre = st.text_input("Apellido y nombre")
 dni = st.text_input("DNI")
 fecha_nacimiento = st.date_input("Fecha de nacimiento")
-opciones = ["Lista Free", "Cumpleaños ""DANIEL MENDOZA - VIERNES 1 JUN """, "Cumpleaños ""FRANCO ONTIVERO - SABADO 2 JUN"""]
+
+opciones = [
+    "Lista Free",
+    "Cumpleaños DANIEL MENDOZA - VIERNES 1 JUN",
+    "Cumpleaños FRANCO ONTIVERO - SÁBADO 2 JUN"
+]
 seleccion = st.selectbox("Elegí una Lista:", opciones)
 
-
+# Botón para guardar
 if st.button("Guardar"):
     if nombre and dni:
-        # Agregamos la fila con los datos
-        sheet.append_row([nombre, dni, fecha_nacimiento.strftime("%d/%m/%Y"),seleccion])
+        sheet.append_row([
+            nombre,
+            dni,
+            fecha_nacimiento.strftime("%d/%m/%Y"),
+            seleccion
+        ])
         st.success("✅ Datos guardados correctamente.")
     else:
         st.warning("⚠️ Por favor completa todos los campos obligatorios.")
