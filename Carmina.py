@@ -1,7 +1,6 @@
 import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
-import json
 
 st.title("🍸 Registro de Listas Carmina PA")
 
@@ -10,8 +9,8 @@ scope = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-# Cargar credenciales desde secrets
-creds_dict = json.loads(st.secrets["GOOGLE_SHEETS_CREDENTIALS"])
+# ✅ Ya no usamos json.loads
+creds_dict = st.secrets["GOOGLE_SHEETS_CREDENTIALS"]
 creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
 
 # Cliente gspread
